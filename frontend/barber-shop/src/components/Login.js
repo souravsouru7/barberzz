@@ -49,7 +49,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-900 text-gray-100">
-      <main className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-lg">
+      <main className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-lg mt-20">
         <section className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Log In</h1>
           <p className="text-gray-400">Access your account to manage your bookings.</p>
@@ -91,6 +91,7 @@ const Login = () => {
               >
                 Log In
               </button>
+              <a href='/forgot-password'>forget password</a>
 
               {error && (
                 <p className="text-red-500 mt-4">

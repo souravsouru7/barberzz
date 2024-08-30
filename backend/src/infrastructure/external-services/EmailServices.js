@@ -21,6 +21,14 @@ class EmailService {
       html: `<p>Your OTP for registration is: <b>${otp}</b></p>`,
     });
   }
+  async sendResetOtpEmail(to, otp) {
+    await this.transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject: 'Your OTP for Reset',
+      html: `<p>Your OTP for Reset is: <b>${otp}</b></p>`,
+    });
+  }
 }
 
 module.exports = EmailService;

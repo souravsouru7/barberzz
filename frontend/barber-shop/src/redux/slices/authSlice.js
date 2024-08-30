@@ -45,6 +45,30 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('/api/auth/forgot-password', { email });
+      return response.data;
+    } catch (error) {
+      
+      return rejectWithValue(error.response?.data?.message || "An error occurred");
+    }
+  }
+);
+// Reset Password
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (resetData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('/api/auth/reset-password', resetData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "An error occurred");
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -57,10 +81,10 @@ const authSlice = createSlice({
     otpSent: false,
     otpVerified: false,
     isAuthenticated: !!localStorage.getItem('token'),
+    passwordReset: false,  
   },
   reducers: {
     logout: (state) => {
-      // Clear user and token from state and localStorage
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -70,11 +94,12 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Existing cases
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
         state.success = true;
         state.otpSent = true;
@@ -87,7 +112,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyOtp.fulfilled, (state, action) => {
+      .addCase(verifyOtp.fulfilled, (state) => {
         state.loading = false;
         state.otpVerified = true;
       })
@@ -108,6 +133,36 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // Forgot Password cases
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+     
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.passwordReset = false;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.passwordReset = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.passwordReset = false;
       });
   },
 });

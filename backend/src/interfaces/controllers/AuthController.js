@@ -5,8 +5,8 @@ const VerifyOtp = require('../../application/use-case/VerifyOtp');
 const loginUser = require('../../application/use-case/loginUser');
 const MongoUserRepository = require('../../infrastructure/db/MongoUserRepository');
 const EmailService = require('../../infrastructure/external-services/EmailServices');
-
-// Initialize the repository and services
+const ForgotPassword = require('../../application/use-case/ForgotPassword');
+const ResetPassword = require('../../application/use-case/ResetPssword');
 const userRepository = new MongoUserRepository();
 const emailService = new EmailService(process.env.EMAIL_USER, process.env.EMAIL_PASS);
 
@@ -50,6 +50,30 @@ class AuthController {
       return res.json({ token, user });
     } catch (error) {
       return res.status(401).json({ message: error.message });
+    }
+  }
+
+  static async forgotPassword(req, res) {
+    const { email } = req.body;
+    const forgotPassword = new ForgotPassword(userRepository, emailService);
+
+    try {
+        const response = await forgotPassword.execute({ email });
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+  static async resetPassword(req, res) {
+    const { email, otp, newPassword } = req.body;
+    const resetPassword = new ResetPassword(userRepository);
+
+    try {
+      const response = await resetPassword.execute({ email, otp, newPassword });
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }
