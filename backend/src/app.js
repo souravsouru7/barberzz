@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors=require("cors")
-
+const shopkeeperRoutes = require('./interfaces/routes/ShopkeeperRoutes');
 dotenv.config();
 
 
@@ -25,6 +25,7 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const authRoutes = require('./interfaces/routes/authRoutes');
 app.use('/api/auth', authRoutes);
+app.use('/api/shopkeepers',shopkeeperRoutes)
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
