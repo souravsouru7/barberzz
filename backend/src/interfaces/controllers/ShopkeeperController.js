@@ -3,11 +3,12 @@ const UploadService = require('../../infrastructure/external-services/UploadServ
 const ShopkeeperRepository=require("../../domain/repositories/ShopkeeperRepository")
 const ShopkeeperModel=require("../../infrastructure/models/ShopkeeperModel")
 const RegisterShopkeeperUseCase=require("../../application/use-case/shopkeeper/ResgisterShopUseCase")
-
+const LoginShopkeeperUseCase=require("../../application/use-case/shopkeeper/LoginShopkeeperUseCase")
 class ShopkeeperController {
     constructor() {
         this.shopkeeperRepository = new ShopkeeperRepository(ShopkeeperModel);
         this.registerShopkeeperUseCase = new RegisterShopkeeperUseCase(this.shopkeeperRepository);
+        this.loginShopkeeperUseCase = new LoginShopkeeperUseCase(this.shopkeeperRepository);
     }
 
     async registerShopkeeper(req, res) {
@@ -30,6 +31,16 @@ class ShopkeeperController {
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: error.message });
+        }
+    }
+    async loginShopkeeper(req, res) {
+        try {
+            const { email, password } = req.body;
+            const result = await this.loginShopkeeperUseCase.execute({ email, password });
+            res.json(result);
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(401).json({ error: error.message });
         }
     }
 }

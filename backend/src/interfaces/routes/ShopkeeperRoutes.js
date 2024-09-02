@@ -16,11 +16,14 @@ const storage = multer.diskStorage({
     }
 });
 
-// Initialize multer with the defined storage configuration
+
 const upload = multer({ storage });
 
 router.post('/register', upload.single('shopLicense'), (req, res) => {
     shopkeeperController.registerShopkeeper(req, res);
+});
+router.post('/login', (req, res) => {
+    shopkeeperController.loginShopkeeper(req, res);
 });
 
 module.exports = router;

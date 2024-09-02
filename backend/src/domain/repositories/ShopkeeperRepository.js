@@ -7,6 +7,9 @@ class ShopkeeperRepository {
         const newShopkeeper = new this.shopkeeperModel(shopkeeper);
         return await newShopkeeper.save();
     }
+    async findByEmail(email) {
+        return await this.shopkeeperModel.findOne({ email });
+    }
 
 }
 
